@@ -1,21 +1,21 @@
-package com.cooltra.recruitment.silveraccountcalculator
+package com.cooltra.recruitment
 
 import com.cooltra.recruitment.internal.PromotionServiceServer
 
 /**
- * The user declares how much they currently pay and their promotion is calculated based on that figure minus a number of deductions.
- * The amount they get back is capped based on number of Spotlight days.
+ * The claimant declares how much they currently pay and their rental award is calculated based on that figure minus a number of deductions.
+ * Rent is capped based on number of bedrooms.
  */
-class SubscriptionAccountCalculator : Calculator {
+class RentalElementCalculator : Calculator {
 
-  override fun calculate(spotlightDays: Int, whatTheyCurrentlyPay: AccountPayment) {
+  override fun calculate(spotlightDays: Int, whatTheyCurrentlyPay: RentalPayment) {
     if (convertToCalendarMonthlyAmount(whatTheyCurrentlyPay) > cap(spotlightDays)) {
       PromotionServiceServer.connect().recordCalculatedAmount(cap(spotlightDays))
     }
   }
 
-  private fun convertToCalendarMonthlyAmount(whatTheyCurrentlyPay: AccountPayment): Double {
-    return if (whatTheyCurrentlyPay.frequency == AccountPayment.Frequency.CALENDAR_MONTHLY) {
+  private fun convertToCalendarMonthlyAmount(whatTheyCurrentlyPay: RentalPayment): Double {
+    return if (whatTheyCurrentlyPay.frequency == RentalPayment.Frequency.CALENDAR_MONTHLY) {
       whatTheyCurrentlyPay.amount
     } else {
       twoWeeksInMonth() * whatTheyCurrentlyPay.amount
